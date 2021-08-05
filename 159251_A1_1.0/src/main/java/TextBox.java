@@ -207,6 +207,9 @@ into PDF format (for standard text files). Use an external library for this such
                 JOptionPane.showMessageDialog(frame, evt.getMessage());
             }
         }
+        else if (event.equals("Exit")) {
+            System.exit(0);
+        }
 
     }
 }
