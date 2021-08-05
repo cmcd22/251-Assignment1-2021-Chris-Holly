@@ -207,6 +207,11 @@ into PDF format (for standard text files). Use an external library for this such
                 JOptionPane.showMessageDialog(frame, evt.getMessage());
             }
         }
+
+        else if (event.equals("About")) {
+            JOptionPane.showMessageDialog(null, "Developed by Chris McDonald & Holly Ducoing\nThank you for using our Text Editor!", "About", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         else if (event.equals("Exit")) {
             System.exit(0);
         }
