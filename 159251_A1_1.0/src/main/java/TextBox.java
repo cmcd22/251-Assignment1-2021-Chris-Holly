@@ -129,15 +129,15 @@ into PDF format (for standard text files). Use an external library for this such
     public void actionPerformed(ActionEvent e) {
         String event = e.getActionCommand();
         // Paste clipboard
-        if (event.equals("paste")){
+        if (event.equals("Paste")){
             textArea.paste();
         }
         // Copy to clipboard
-        else if (event.equals("copy")){
+        else if (event.equals("Copy")){
             textArea.copy();
         }
         // Cuts text
-        else if (event.equals("cut")){
+        else if (event.equals("Cut")){
             textArea.cut();
         }
         else if (event.equals("Open")) {
