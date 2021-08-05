@@ -51,12 +51,12 @@ into PDF format (for standard text files). Use an external library for this such
         //Menubar
         JMenuBar menuBar = new JMenuBar();
         //Menu
-        JMenu menu = new JMenu("File");
+        JMenu file = new JMenu("File");
         //Menu items
         JMenuItem newFile = new JMenuItem("New");
         JMenuItem openFile = new JMenuItem("Open");
         JMenuItem saveFile = new JMenuItem("Save");
-        JMenuItem searchText = new JMenuItem("Search");
+        //JMenuItem searchText = new JMenuItem("Search");
         JMenuItem savetoPDF = new JMenuItem("Save to PDF");
         JMenuItem printFile = new JMenuItem("Print");
 
@@ -65,22 +65,56 @@ into PDF format (for standard text files). Use an external library for this such
         openFile.addActionListener(this);
         saveFile.addActionListener(this);
         printFile.addActionListener(this);
-        searchText.addActionListener(this);
         savetoPDF.addActionListener(this);
         // Adding menu items to menu
-        menu.add(newFile);
-        menu.add(openFile);
-        menu.add(saveFile);
-        menu.add(savetoPDF);
-        menu.add(printFile);
+        file.add(newFile);
+        file.add(openFile);
+        file.add(saveFile);
+        file.add(savetoPDF);
+        file.add(printFile);
+
+        //Edit option
+        JMenu edit = new JMenu("Edit");
+
+        //Creating edit menu items
+        JMenuItem copy = new JMenuItem("Copy");
+        JMenuItem cut = new JMenuItem("Cut");
+        JMenuItem paste = new JMenuItem("Paste");
+
+        //Adding action listeners
+        copy.addActionListener(this);
+        cut.addActionListener(this);
+        paste.addActionListener(this);
+
+        edit.add(copy);
+        edit.add(cut);
+        edit.add(paste);
+
+        //Search option
+        JMenuItem search = new JMenuItem("Search");
+
+        search.addActionListener(this);
+
+        //Time/Date option
+        JMenuItem timeDate = new JMenuItem("Time/Date");
+
+        timeDate.addActionListener(this);
+
+        //About option
+        JMenuItem about = new JMenuItem("About");
+
+        about.addActionListener(this);
+
         // Exit option
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(this);
-        //Date and time
 
         // Add everything to the menu bar
-        menuBar.add(menu);
-        menuBar.add(searchText);
+        menuBar.add(file);
+        menuBar.add(edit);
+        menuBar.add(search);
+        menuBar.add(timeDate);
+        menuBar.add(about);
         menuBar.add(exit);
         // Display window
         frame.setJMenuBar(menuBar);
