@@ -93,11 +93,14 @@ into PDF format (for standard text files). Use an external library for this such
         search.addActionListener(this);
 
         //Time/Date option
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        JMenuItem timeDate = new JMenuItem(formatter.format(date));
-
-        timeDate.addActionListener(this);
+        JMenuItem timeDate = new JMenuItem();
+        //Refresh rate in milliseconds
+        int refresh = 1000;
+        ActionListener showTime = evt -> {
+            String date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date(System.currentTimeMillis()));
+            timeDate.setText(date);
+        };
+        new Timer(refresh, showTime).start();
 
         //About option
         JMenuItem about = new JMenuItem("About");
@@ -112,9 +115,9 @@ into PDF format (for standard text files). Use an external library for this such
         menuBar.add(file);
         menuBar.add(edit);
         menuBar.add(search);
-        menuBar.add(timeDate);
         menuBar.add(about);
         menuBar.add(exit);
+        menuBar.add(timeDate);
         // Display window
         frame.setJMenuBar(menuBar);
         frame.add(textArea);
