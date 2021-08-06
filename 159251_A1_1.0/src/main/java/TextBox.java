@@ -1,12 +1,9 @@
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.metal.OceanTheme;
-import javax.swing.text.DefaultEditorKit;
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TextBox extends JFrame implements ActionListener{
@@ -19,6 +16,7 @@ public class TextBox extends JFrame implements ActionListener{
     public void newWindow(){
         // Basic frame
         frame = new JFrame("Text Editor");
+        frame.setResizable(true);
         // Basic text writing zone
         textArea = new JTextArea();
         // Menu bar containing important buttons
@@ -56,7 +54,6 @@ into PDF format (for standard text files). Use an external library for this such
         JMenuItem newFile = new JMenuItem("New");
         JMenuItem openFile = new JMenuItem("Open");
         JMenuItem saveFile = new JMenuItem("Save");
-        //JMenuItem searchText = new JMenuItem("Search");
         JMenuItem savetoPDF = new JMenuItem("Save to PDF");
         JMenuItem printFile = new JMenuItem("Print");
 
@@ -96,7 +93,9 @@ into PDF format (for standard text files). Use an external library for this such
         search.addActionListener(this);
 
         //Time/Date option
-        JMenuItem timeDate = new JMenuItem("Time/Date");
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        JMenuItem timeDate = new JMenuItem(formatter.format(date));
 
         timeDate.addActionListener(this);
 
@@ -206,6 +205,9 @@ into PDF format (for standard text files). Use an external library for this such
             catch (Exception evt) {
                 JOptionPane.showMessageDialog(frame, evt.getMessage());
             }
+        }
+        else if (event.equals("New")){
+            textArea.setText("");
         }
 
         else if (event.equals("About")) {
