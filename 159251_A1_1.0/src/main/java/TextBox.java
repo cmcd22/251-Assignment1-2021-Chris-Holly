@@ -19,42 +19,17 @@ public class TextBox extends JFrame implements ActionListener{
         frame.setResizable(true);
         // Basic text writing zone
         textArea = new JTextArea();
-        // Menu bar containing important buttons
-        /*
-New function: to create a new (fresh) window.
-Open function: to read other text files (just standard .txt files). This should allow users to navigate the file
-system to search for a file.
-The ability to read OpenDocument Text (.odt) files. This is part of the Open function.
-
-Save function: save text output into .txt file format. This should allow users to navigate the file system
-to save the file in a selected drive/location.
-
-Search: search for text within the screen (this will be tested based on a single word)
-
-Exit: to quit the program – close all windows.
-
-Select text, Copy, Paste and Cut (SCPC) capabilities.
-
-Time and Date (T&D): retrieve the current time and data from the OS and place it at the
-top of the page of the editor.
-
-About:  display the names of both team members and a brief message in a popup message box.
-
-Print function: allow your editor to print text by connecting it to the local printer in your machine (
-similar to any other text editor that you have used).
-
-harder: include a PDF conversation function to your editor so the file can be also saved
-into PDF format (for standard text files). Use an external library for this such as Apache PDFBox  or OpenPDF.
-         */
         //Menubar
         JMenuBar menuBar = new JMenuBar();
         //Menu
         JMenu file = new JMenu("File");
         //Menu items
+        file.addSeparator();
+        JMenu filesubmenu = new JMenu("Save");
         JMenuItem newFile = new JMenuItem("New");
         JMenuItem openFile = new JMenuItem("Open");
         JMenuItem saveFile = new JMenuItem("Save");
-        JMenuItem savetoPDF = new JMenuItem("Save to PDF");
+        JMenuItem savetoPDF = new JMenuItem("Save as PDF");
         JMenuItem printFile = new JMenuItem("Print");
 
         //Action listeners
@@ -63,12 +38,14 @@ into PDF format (for standard text files). Use an external library for this such
         saveFile.addActionListener(this);
         printFile.addActionListener(this);
         savetoPDF.addActionListener(this);
+
         // Adding menu items to menu
         file.add(newFile);
         file.add(openFile);
-        file.add(saveFile);
-        file.add(savetoPDF);
+        filesubmenu.add(saveFile);
+        filesubmenu.add(savetoPDF);
         file.add(printFile);
+        file.add(filesubmenu);
 
         //Edit option
         JMenu edit = new JMenu("Edit");
@@ -77,15 +54,42 @@ into PDF format (for standard text files). Use an external library for this such
         JMenuItem copy = new JMenuItem("Copy");
         JMenuItem cut = new JMenuItem("Cut");
         JMenuItem paste = new JMenuItem("Paste");
-
+        // submenu to edit
+        edit.addSeparator();
+        JMenu submenu = new JMenu("Edit Font");
+        JMenuItem normal = new JMenuItem("Normal");
+        JMenuItem bold = new JMenuItem("Bold");
+        JMenuItem italic = new JMenuItem("Italic");
+        JMenuItem underline = new JMenuItem("Underline");
+        JMenuItem superscript = new JMenuItem("Superscript");
+        JMenuItem color = new JMenuItem("Color");
+        JMenuItem leftalign = new JMenuItem("Align left");
+        JMenuItem rightalign = new JMenuItem("Align right");
         //Adding action listeners
         copy.addActionListener(this);
         cut.addActionListener(this);
         paste.addActionListener(this);
-
+        submenu.addActionListener(this);
+        normal.addActionListener(this);
+        bold.addActionListener(this);
+        italic.addActionListener(this);
+        underline.addActionListener(this);
+        superscript.addActionListener(this);
+        color.addActionListener(this);
+        leftalign.addActionListener(this);
+        rightalign.addActionListener(this);
+        // Add to edit dropdown
         edit.add(copy);
         edit.add(cut);
         edit.add(paste);
+        submenu.add(normal);
+        submenu.add(bold);
+        submenu.add(italic);
+        submenu.add(superscript);
+        submenu.add(color);
+        submenu.add(leftalign);
+        submenu.add(rightalign);
+        edit.add(submenu);
 
         //Search option
         JMenuItem search = new JMenuItem("Search");
@@ -110,14 +114,13 @@ into PDF format (for standard text files). Use an external library for this such
         // Exit option
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(this);
-
         // Add everything to the menu bar
         menuBar.add(file);
         menuBar.add(edit);
         menuBar.add(search);
+        menuBar.add(timeDate);
         menuBar.add(about);
         menuBar.add(exit);
-        menuBar.add(timeDate);
         // Display window
         frame.setJMenuBar(menuBar);
         frame.add(textArea);
