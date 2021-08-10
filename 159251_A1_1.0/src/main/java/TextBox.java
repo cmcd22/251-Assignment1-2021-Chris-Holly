@@ -10,11 +10,14 @@ public class TextBox extends JFrame implements ActionListener{
     JFrame frame;
     JTextArea textArea;
     JScrollPane scrollPane;
+    //Integers for location of window
+    int x = 50;
+    int y = 50;
     public static void main(String[] args){
         TextBox tb = new TextBox();
-        tb.newWindow();
+        tb.newWindow(50,50);
     }
-    public void newWindow(){
+    public void newWindow(int x, int y){
         // Basic frame
         frame = new JFrame("Text Editor");
         frame.setResizable(true);
@@ -129,6 +132,7 @@ public class TextBox extends JFrame implements ActionListener{
         frame.setJMenuBar(menuBar);
         frame.add(scrollPane);
         frame.setSize(500,500);
+        frame.setLocation(x,y);
         frame.show();
     }
 
@@ -217,7 +221,10 @@ public class TextBox extends JFrame implements ActionListener{
             }
         }
         else if (event.equals("New")){
-            textArea.setText("");
+            //display new window at new coordinates
+            x += 15;
+            y += 15;
+            newWindow(x,y);
         }
 
         else if (event.equals("About")) {
