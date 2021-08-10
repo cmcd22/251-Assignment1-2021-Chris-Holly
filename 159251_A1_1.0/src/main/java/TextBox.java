@@ -190,7 +190,7 @@ public class TextBox extends JFrame implements ActionListener{
             int r = j.showSaveDialog(null);
             if (r == JFileChooser.APPROVE_OPTION) {
                 // Set directory
-                File fi = new File(j.getSelectedFile().getAbsolutePath());
+                File fi = new File(j.getSelectedFile().getAbsolutePath() + ".txt");
                 // Writes the file
                 try {
                     // Create a file writer
