@@ -9,6 +9,7 @@ import java.util.Date;
 public class TextBox extends JFrame implements ActionListener{
     JFrame frame;
     JTextArea textArea;
+    JScrollPane scrollPane;
     public static void main(String[] args){
         TextBox tb = new TextBox();
         tb.newWindow();
@@ -19,6 +20,9 @@ public class TextBox extends JFrame implements ActionListener{
         frame.setResizable(true);
         // Basic text writing zone
         textArea = new JTextArea();
+        //Add scrollbar
+        scrollPane = new JScrollPane (textArea,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         //Menubar
         JMenuBar menuBar = new JMenuBar();
         //Menu
@@ -123,7 +127,7 @@ public class TextBox extends JFrame implements ActionListener{
         menuBar.add(exit);
         // Display window
         frame.setJMenuBar(menuBar);
-        frame.add(textArea);
+        frame.add(scrollPane);
         frame.setSize(500,500);
         frame.show();
     }
