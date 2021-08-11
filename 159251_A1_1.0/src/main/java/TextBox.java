@@ -1,10 +1,15 @@
 import javax.swing.*;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TextBox extends JFrame implements ActionListener{
     JFrame frame;
@@ -225,6 +230,35 @@ public class TextBox extends JFrame implements ActionListener{
             x += 15;
             y += 15;
             newWindow(x,y);
+        }
+
+        else if (event.equals("Search")) {
+            //Removes existing highlights
+            Highlighter h = textArea.getHighlighter();
+            h.removeAllHighlights();
+            //Show popup window asking user to input a word
+            String word = JOptionPane.showInputDialog("Enter search word: \nSingle word searches only");
+            int index = textArea.getText().indexOf(word);
+
+            //Allow only single-word searches
+            if (word.contains(" ")) {
+                JOptionPane.showMessageDialog(null,"Single word searches only");
+            }
+            //Display message if word not found in window
+            else if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Search term not found");
+            } else {
+                //Search document, highlighting all instances of chosen word
+                Pattern p = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+                Matcher m = p.matcher(textArea.getText());
+                while (m.find()) {
+                    try {
+                        h.addHighlight(m.start(), m.end(), DefaultHighlighter.DefaultPainter);
+                    } catch (BadLocationException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
         }
 
         else if (event.equals("About")) {
