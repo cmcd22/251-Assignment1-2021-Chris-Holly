@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
@@ -11,11 +10,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.fife.ui.rtextarea.*;
+import org.fife.ui.rsyntaxtextarea.*;
 
 public class TextBox extends JFrame implements ActionListener{
     JFrame frame;
-    JTextArea textArea;
-    JScrollPane scrollPane;
+    //JTextArea textArea;
+    //JScrollPane scrollPane;
+    RSyntaxTextArea textArea;
+    RTextScrollPane sp;
     //Integers for location of window
     int x = 50;
     int y = 50;
@@ -28,10 +31,12 @@ public class TextBox extends JFrame implements ActionListener{
         frame = new JFrame("Text Editor");
         frame.setResizable(true);
         // Basic text writing zone
-        textArea = new JTextArea();
+        //textArea = new JTextArea();
+        textArea = new RSyntaxTextArea();
+        sp = new RTextScrollPane(textArea);
         //Add scrollbar
-        scrollPane = new JScrollPane (textArea,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        //scrollPane = new JScrollPane (textArea,
+                //JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         //Menubar
         JMenuBar menuBar = new JMenuBar();
         //Menu
@@ -136,7 +141,8 @@ public class TextBox extends JFrame implements ActionListener{
         menuBar.add(exit);
         // Display window
         frame.setJMenuBar(menuBar);
-        frame.add(scrollPane);
+        //frame.add(scrollPane);
+        frame.add(sp);
         frame.setSize(500,500);
         frame.setLocation(x,y);
         frame.show();
@@ -167,6 +173,20 @@ public class TextBox extends JFrame implements ActionListener{
             if (r == JFileChooser.APPROVE_OPTION) {
                 // Set the label to the path of the selected directory
                 File fi = new File(j.getSelectedFile().getAbsolutePath());
+                String fileName = fi.toString();
+                int dotIndex = fileName.lastIndexOf('.');
+                String end = (dotIndex == -1) ? "" : fileName.substring(dotIndex+1);
+                if (end.equals("java")) {
+                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+                } else if (end.equals("py")) {
+                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PYTHON);
+                } else if (end.equals("cpp")) {
+                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
+                } else if (end.equals("html")) {
+                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
+                } else if (end.equals("xml")) {
+                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+                }
                 try {
                     String s1 = "",
                             sl = "";
