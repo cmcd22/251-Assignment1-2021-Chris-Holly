@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -267,27 +268,39 @@ public class TextBox extends JFrame implements ActionListener{
             h.removeAllHighlights();
             //Show popup window asking user to input a word
             String word = JOptionPane.showInputDialog("Enter search word: \nSingle word searches only");
-            int index = textArea.getText().indexOf(word);
-
-            //Allow only single-word searches
-            if (word.contains(" ")) {
-                JOptionPane.showMessageDialog(null,"Single word searches only");
-            }
-            //Display message if word not found in window
-            else if (index == -1) {
-                JOptionPane.showMessageDialog(null, "Search term not found");
-            }
-            else {
-                //Search document, highlighting all instances of chosen word
-                Pattern p = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
-                Matcher m = p.matcher(textArea.getText());
-                while (m.find()) {
-                    try {
-                        h.addHighlight(m.start(), m.end(), DefaultHighlighter.DefaultPainter);
-                    } catch (BadLocationException ex) {
-                        ex.printStackTrace();
+            //If the 'okay' button is selected
+            if (word != null) {
+                //Display message if input left blank
+                if (word.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Please enter a search word");
+                }
+                //Allow only single-word searches
+                else if (word.contains(" ")) {
+                    JOptionPane.showMessageDialog(null, "Single word searches only");
+                } else {
+                    //Create search criteria
+                    Pattern p = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+                    Matcher m = p.matcher(textArea.getText());
+                    //Tracks the number of times the search term appears
+                    int cycles = 0;
+                    //while there are undiscovered instances of the search word
+                    while (m.find()) {
+                        cycles += 1;
+                        //search terms gets highlighted
+                        try {
+                            h.addHighlight(m.start(), m.end(), DefaultHighlighter.DefaultPainter);
+                        } catch (BadLocationException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    //if no instances of the word are found
+                    if (cycles == 0) {
+                        JOptionPane.showMessageDialog(null, "Search term not found");
                     }
                 }
+                //If the window is closed or 'cancel' is clicked
+            } else {
+                JOptionPane.showMessageDialog(null, "Search cancelled");
             }
         }
 
