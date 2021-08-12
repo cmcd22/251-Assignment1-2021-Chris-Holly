@@ -195,7 +195,35 @@ public class TextBox extends JFrame implements ActionListener{
             int r = j.showSaveDialog(null);
             if (r == JFileChooser.APPROVE_OPTION) {
                 // Set directory
-                File fi = new File(j.getSelectedFile().getAbsolutePath() + ".txt");
+                File fi = new File(j.getSelectedFile().getAbsolutePath());
+                // Writes the file
+                try {
+                    // Create a file writer
+                    FileWriter wr = new FileWriter(fi, false);
+                    // Create buffered writer
+                    BufferedWriter w = new BufferedWriter(wr);
+                    // Write
+                    w.write(textArea.getText());
+                    w.flush();
+                    w.close();
+                }
+                catch (Exception evt) {
+                    JOptionPane.showMessageDialog(frame, evt.getMessage());
+                }
+            }
+            // If save is cancelled
+            else {
+                JOptionPane.showMessageDialog(frame, "Save cancelled.");
+            }
+
+        }
+        else if (event.equals("Save as PDF")){
+            JFileChooser j = new JFileChooser("f:");
+            // Simple SaveDialog function
+            int r = j.showSaveDialog(null);
+            if (r == JFileChooser.APPROVE_OPTION) {
+                // Set directory
+                File fi = new File(j.getSelectedFile().getAbsolutePath() + ".pdf");
                 // Writes the file
                 try {
                     // Create a file writer
@@ -233,6 +261,7 @@ public class TextBox extends JFrame implements ActionListener{
         }
 
         else if (event.equals("Search")) {
+
             //Removes existing highlights
             Highlighter h = textArea.getHighlighter();
             h.removeAllHighlights();
@@ -247,7 +276,8 @@ public class TextBox extends JFrame implements ActionListener{
             //Display message if word not found in window
             else if (index == -1) {
                 JOptionPane.showMessageDialog(null, "Search term not found");
-            } else {
+            }
+            else {
                 //Search document, highlighting all instances of chosen word
                 Pattern p = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
                 Matcher m = p.matcher(textArea.getText());
