@@ -1,3 +1,12 @@
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
@@ -7,11 +16,9 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.fife.ui.rtextarea.*;
-import org.fife.ui.rsyntaxtextarea.*;
 
 public class TextBox extends JFrame implements ActionListener{
     JFrame frame;
@@ -154,18 +161,17 @@ public class TextBox extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         String event = e.getActionCommand();
         // Paste clipboard
-        if (event.equals("Paste")){
+        if (event.equals("Paste")) {
             textArea.paste();
         }
         // Copy to clipboard
-        else if (event.equals("Copy")){
+        else if (event.equals("Copy")) {
             textArea.copy();
         }
         // Cuts text
-        else if (event.equals("Cut")){
+        else if (event.equals("Cut")) {
             textArea.cut();
-        }
-        else if (event.equals("Open")) {
+        } else if (event.equals("Open")) {
             JFileChooser j = new JFileChooser("f:");
             // simple OpenDialog function
             int r = j.showOpenDialog(null);
@@ -175,7 +181,7 @@ public class TextBox extends JFrame implements ActionListener{
                 File fi = new File(j.getSelectedFile().getAbsolutePath());
                 String fileName = fi.toString();
                 int dotIndex = fileName.lastIndexOf('.');
-                String end = (dotIndex == -1) ? "" : fileName.substring(dotIndex+1);
+                String end = (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
                 if (end.equals("java")) {
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
                 } else if (end.equals("py")) {
@@ -209,8 +215,7 @@ public class TextBox extends JFrame implements ActionListener{
             // If open is cancelled
             else
                 JOptionPane.showMessageDialog(frame, "Open cancelled.");
-        }
-        else if (event.equals("Save")){
+        } else if (event.equals("Save")) {
             JFileChooser j = new JFileChooser("f:");
             // Simple SaveDialog function
             int r = j.showSaveDialog(null);
@@ -227,8 +232,8 @@ public class TextBox extends JFrame implements ActionListener{
                     w.write(textArea.getText());
                     w.flush();
                     w.close();
-                }
-                catch (Exception evt) {
+                    wr.close();
+                } catch (Exception evt) {
                     JOptionPane.showMessageDialog(frame, evt.getMessage());
                 }
             }
@@ -236,35 +241,31 @@ public class TextBox extends JFrame implements ActionListener{
             else {
                 JOptionPane.showMessageDialog(frame, "Save cancelled.");
             }
-
-        }
-        else if (event.equals("Save as PDF")){
-            JFileChooser j = new JFileChooser("f:");
-            // Simple SaveDialog function
-            int r = j.showSaveDialog(null);
-            if (r == JFileChooser.APPROVE_OPTION) {
-                // Set directory
-                File fi = new File(j.getSelectedFile().getAbsolutePath() + ".pdf");
-                // Writes the file
-                try {
-                    // Create a file writer
-                    FileWriter wr = new FileWriter(fi, false);
-                    // Create buffered writer
-                    BufferedWriter w = new BufferedWriter(wr);
-                    // Write
-                    w.write(textArea.getText());
-                    w.flush();
-                    w.close();
+            // PDFbox save
+        } else if (event.equals("Save as PDF")) {
+            try (PDDocument doc = new PDDocument()) {
+                PDPage myPage = new PDPage();
+                doc.addPage(myPage);
+                try (PDPageContentStream cont = new PDPageContentStream(doc, myPage)) {
+                    cont.beginText();
+                    cont.setFont(PDType1Font.COURIER, 10);
+                    cont.setLeading(14.5f);
+                    cont.newLineAtOffset(25, 700);
+                    String line1 = textArea.getText();
+                    cont.showText(line1);
+                    cont.endText();
+                    JOptionPane.showMessageDialog(frame, "Saved.");
                 }
-                catch (Exception evt) {
+                catch(Exception evt){
                     JOptionPane.showMessageDialog(frame, evt.getMessage());
                 }
+                // saves to /src
+                doc.save("your_PDF.pdf");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
-            // If save is cancelled
-            else
-                JOptionPane.showMessageDialog(frame, "Save cancelled.");
-
         }
+
         else if (event.equals("Print")) {
             try {
                 // print the file
