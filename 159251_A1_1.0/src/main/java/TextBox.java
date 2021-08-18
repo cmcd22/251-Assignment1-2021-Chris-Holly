@@ -181,9 +181,12 @@ public class TextBox extends JFrame implements ActionListener{
         else if (event.equals("Cut")) {
             textArea.cut();
         } else if (event.equals("Open")) {
+
             JFileChooser j = new JFileChooser("f:");
             // simple OpenDialog function
             int r = j.showOpenDialog(null);
+            //Reset syntax style to none
+            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
             // If a file is selected
             if (r == JFileChooser.APPROVE_OPTION) {
                 // Set the label to the path of the selected directory
@@ -203,7 +206,8 @@ public class TextBox extends JFrame implements ActionListener{
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
                 } else if (end.equals("xml")) {
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
-                } else if (end.equals("rtf")) {
+                }
+                if (end.equals("rtf")) {
                     try {
                         //Get file path
                         Path filePath = Paths.get(String.valueOf(fi));
