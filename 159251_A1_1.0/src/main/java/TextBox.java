@@ -12,10 +12,16 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
+import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -182,9 +188,11 @@ public class TextBox extends JFrame implements ActionListener{
             if (r == JFileChooser.APPROVE_OPTION) {
                 // Set the label to the path of the selected directory
                 File fi = new File(j.getSelectedFile().getAbsolutePath());
+                //Get file type
                 String fileName = fi.toString();
                 int dotIndex = fileName.lastIndexOf('.');
                 String end = (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
+                //Set correct syntax style for type of file
                 if (end.equals("java")) {
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
                 } else if (end.equals("py")) {
@@ -195,29 +203,49 @@ public class TextBox extends JFrame implements ActionListener{
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
                 } else if (end.equals("xml")) {
                     textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
-                }
-                try {
-                    String s1 = "",
-                            sl = "";
-                    // File reader
-                    FileReader fr = new FileReader(fi);
-                    // Buffered reader
-                    BufferedReader br = new BufferedReader(fr);
-                    // Initialize sl
-                    sl = br.readLine();
-                    // Take the input from the file
-                    while ((s1 = br.readLine()) != null) {
-                        sl = sl + "\n" + s1;
+                } else if (end.equals("rtf")) {
+                    try {
+                        //Get file path
+                        Path filePath = Paths.get(String.valueOf(fi));
+                        byte[] content = Files.readAllBytes(filePath);
+                        //Set up RTF reader
+                        String rtf = new String(content, StandardCharsets.ISO_8859_1);
+                        StringReader in = new StringReader(rtf);
+                        RTFEditorKit kit = new RTFEditorKit();
+                        Document doc = kit.createDefaultDocument();
+                        //Read RTF file
+                        kit.read(in, doc, 0);
+                        String text = doc.getText(0, doc.getLength());
+                        //Display
+                        textArea.setText(text);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(frame, ex.getMessage());
                     }
-                    // Set the text
-                    textArea.setText(sl);
-                } catch (Exception evt) {
-                    JOptionPane.showMessageDialog(frame, evt.getMessage());
+                } else {
+                    try {
+                        String s1 = "",
+                                sl = "";
+                        // File reader
+                        FileReader fr = new FileReader(fi);
+                        // Buffered reader
+                        BufferedReader br = new BufferedReader(fr);
+                        // Initialize sl
+                        sl = br.readLine();
+                        // Take the input from the file
+                        while ((s1 = br.readLine()) != null) {
+                            sl = sl + "\n" + s1;
+                        }
+                        // Set the text
+                        textArea.setText(sl);
+                    } catch (Exception evt) {
+                        JOptionPane.showMessageDialog(frame, evt.getMessage());
+                    }
                 }
             }
             // If open is cancelled
             else
                 JOptionPane.showMessageDialog(frame, "Open cancelled.");
+
         } else if (event.equals("Save")) {
             JFileChooser j = new JFileChooser("f:");
             // Simple SaveDialog function
