@@ -8,6 +8,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -26,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,9 +44,13 @@ public class TextBox extends JFrame implements ActionListener{
         TextBox tb = new TextBox();
         tb.newWindow(50,50);
     }
-    public void newWindow(int x, int y){
+    public void newWindow(int x, int y) {
+        // Import config file parameters
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("config.yml");
+        Yaml yaml = new Yaml();
+        Map<String,Object> data = yaml.load(is);
         // Basic frame
-        frame = new JFrame("Text Editor");
+        frame = new JFrame(data.get("title").toString());
         frame.setResizable(true);
         // Basic text writing zone
         //textArea = new JTextArea();
@@ -64,6 +70,7 @@ public class TextBox extends JFrame implements ActionListener{
         JMenuItem openFile = new JMenuItem("Open");
         JMenuItem saveFile = new JMenuItem("Save");
         JMenuItem savetoPDF = new JMenuItem("Save as PDF");
+        JMenuItem saveasRTF = new JMenuItem("Save as RTF");
         JMenuItem printFile = new JMenuItem("Print");
 
         //Action listeners
@@ -72,12 +79,14 @@ public class TextBox extends JFrame implements ActionListener{
         saveFile.addActionListener(this);
         printFile.addActionListener(this);
         savetoPDF.addActionListener(this);
+        saveasRTF.addActionListener(this);
 
         // Adding menu items to menu
         file.add(newFile);
         file.add(openFile);
         filesubmenu.add(saveFile);
         filesubmenu.add(savetoPDF);
+        filesubmenu.add(saveasRTF);
         file.add(printFile);
         file.add(filesubmenu);
 
@@ -159,7 +168,9 @@ public class TextBox extends JFrame implements ActionListener{
         frame.setJMenuBar(menuBar);
         //frame.add(scrollPane);
         frame.add(sp);
-        frame.setSize(500,500);
+        int width = (int) data.get("width");
+        int height = (int) data.get("height");
+        frame.setSize(width,height);
         frame.setLocation(x,y);
         frame.show();
     }
@@ -268,6 +279,7 @@ public class TextBox extends JFrame implements ActionListener{
                     w.flush();
                     w.close();
                     wr.close();
+                    JOptionPane.showMessageDialog(frame, "Save successful.");
                 } catch (Exception evt) {
                     JOptionPane.showMessageDialog(frame, evt.getMessage());
                 }
@@ -370,7 +382,122 @@ public class TextBox extends JFrame implements ActionListener{
 //            } catch (IOException ioException) {
 //                ioException.printStackTrace();
 //            }
+//        } else if (event.equals("Save as RTF")) {
+//            Path filePath = Paths.get(String.valueOf(fi));
+//            byte[] content = new byte[0];
+//            try {
+//                content = Files.readAllBytes(filePath);
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//            //Set up RTF reader
+//            String rtf = new String(content, StandardCharsets.ISO_8859_1);
+//            StringReader in = new StringReader(rtf);
+//            RTFEditorKit kit = new RTFEditorKit();
+//            Document doc = kit.createDefaultDocument();
+//            //Read RTF file
+//            kit.write(in, doc, 0, doc.getLength());
+//            String text = doc.getText(0, doc.getLength());
+//            //Display
+//            textArea.setText(text);
         }
+//            ByteArrayInputStream input= new ByteArrayInputStream(textArea.getText().getBytes());
+//            String rtf = new String(input, StandardCharsets.ISO_8859_1);
+//            StringWriter in = new StringWriter(rtf);
+//            try {
+//                RTFEditorKit rtfEditorKit = new RTFEditorKit();
+////                HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
+////                Document htmlDoc = htmlEditorKit.createDefaultDocument();
+//                Document rtfDoc = rtfEditorKit.createDefaultDocument();
+//                rtfEditorKit.read(input, rtfDoc,0);
+////                htmlEditorKit.read(input, htmlDoc, 0);
+//                rtfEditorKit.write(writer, rtfDoc, 0, rtfDoc.getLength());
+//            } catch (Exception ex) {
+//                System.out.println("Error"+ex);
+//            }
+//            System.out.println(writer.toString());
+//        }
+
+
+
+//            final StringWriter out = new StringWriter();
+//            ByteArrayOutputStream b = new ByteArrayOutputStream();
+//            Document doc = textArea.getDocument();
+//            String x = null;
+//            try {
+//                x = doc.getText(0,doc.getLength());
+//            } catch (BadLocationException ex) {
+//                ex.printStackTrace();
+//            }
+//            System.out.println(x);
+//            RTFEditorKit kit = new RTFEditorKit();
+//            try {
+//                kit.write(b, doc, 0, doc.getLength());
+//            } catch (IOException | BadLocationException ex) {
+//                ex.printStackTrace();
+//            }
+//            try {
+//                out.close();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//
+//            String rtfContent = b.toString();
+//            System.out.println(rtfContent);
+//            {
+//                // replace "Monospaced" by a well-known monospace font
+//                rtfContent = rtfContent.replaceAll("Monospaced", "Courier New");
+//                final StringBuffer rtfContentBuffer = new StringBuffer(rtfContent);
+//                final int endProlog = rtfContentBuffer.indexOf("\n\n");
+//                // set a good Line Space and no Space Before or Space After each paragraph
+////                rtfContentBuffer.insert(endProlog, "\n\\sl240");
+////                rtfContentBuffer.insert(endProlog, "\n\\sb0\\sa0");
+////                rtfContent = rtfContentBuffer.toString();
+//            }
+//
+//            //final File file = new File("c:\\temp\\test.rtf");
+//            FileOutputStream fos = null;
+//            try {
+//                JFileChooser j = new JFileChooser("f:");
+//                // Simple SaveDialog function
+//                int r = j.showSaveDialog(null);
+//                if (r == JFileChooser.APPROVE_OPTION) {
+//                    File fi = new File(j.getSelectedFile().getAbsolutePath());
+//                    fos = new FileOutputStream(fi);
+//                }
+//            } catch (FileNotFoundException ex) {
+//                ex.printStackTrace();
+//            }
+//            try {
+//                assert fos != null;
+//                fos.write(rtfContent.getBytes());
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//            try {
+//                fos.close();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+
+//            JFileChooser j = new JFileChooser("f:");
+//            // Simple SaveDialog function
+//            int r = j.showSaveDialog(null);
+//            if (r == JFileChooser.APPROVE_OPTION) {
+//                File fi = new File(j.getSelectedFile().getAbsolutePath());
+//                Path path = Paths.get(String.valueOf(fi));
+//                byte[] content = new byte[0];
+//                content = textArea.getText().getBytes();
+//                String str = new String(content, StandardCharsets.ISO_8859_1);
+//                content = str.getBytes(StandardCharsets.ISO_8859_1);
+//                try {
+//                    Files.write(path, content);
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
 
         else if (event.equals("Print")) {
             try {
