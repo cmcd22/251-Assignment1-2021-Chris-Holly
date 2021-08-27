@@ -16,6 +16,7 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
 import javax.swing.text.rtf.RTFEditorKit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -45,10 +46,44 @@ public class TextBox extends JFrame implements ActionListener{
         tb.newWindow(50,50);
     }
     public void newWindow(int x, int y) {
+
         // Import config file parameters
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("config.yml");
         Yaml yaml = new Yaml();
         Map<String,Object> data = yaml.load(is);
+
+        // Set background and foreground colours
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        // Retrieve background colour from config file
+        String backColStr = data.get("background_color").toString();
+        String[] backColArray = backColStr.split(",");
+        int[] backIntArray = new int[3];
+        int count1 = 0;
+        for (String num1 : backColArray) {
+            int final1Num = Integer.parseInt(num1);
+            backIntArray[count1] = final1Num;
+            count1 += 1;
+        }
+        // Retrieve foreground colour from config file
+        String foreColStr = data.get("foreground_color").toString();
+        String[] foreColArray = foreColStr.split(",");
+        int[] foreIntArray = new int[3];
+        int count2 = 0;
+        for (String num2 : foreColArray) {
+            int final2Num = Integer.parseInt(num2);
+            foreIntArray[count2] = final2Num;
+            count2 += 1;
+        }
+        // Set colours for menus
+        Color background = new Color(backIntArray[0],backIntArray[1],backIntArray[2]);
+        Color foreground = new Color(foreIntArray[0],foreIntArray[1],foreIntArray[2]);
+        UIManager.put("MenuBar.foreground",foreground);
+        UIManager.put("Menu.foreground",foreground);
+        UIManager.put("MenuItem.foreground",foreground);
         // Basic frame
         frame = new JFrame(data.get("title").toString());
         frame.setResizable(true);
@@ -56,6 +91,14 @@ public class TextBox extends JFrame implements ActionListener{
         //textArea = new JTextArea();
         textArea = new RSyntaxTextArea();
         sp = new RTextScrollPane(textArea);
+        // Set font type,style and size
+        Font font = new Font(data.get("font").toString(),Font.PLAIN,(int) data.get("size"));
+        // Set color scheme for text editor window
+        textArea.setFont(font);
+        textArea.setBackground(background);
+        textArea.setForeground(foreground);
+        textArea.setCurrentLineHighlightColor(background);
+        textArea.setCaretColor(foreground);
         //Add scrollbar
         //scrollPane = new JScrollPane (textArea,
                 //JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -64,7 +107,6 @@ public class TextBox extends JFrame implements ActionListener{
         //Menu
         JMenu file = new JMenu("File");
         //Menu items
-        file.addSeparator();
         JMenu filesubmenu = new JMenu("Save");
         JMenuItem newFile = new JMenuItem("New");
         JMenuItem openFile = new JMenuItem("Open");
@@ -87,8 +129,8 @@ public class TextBox extends JFrame implements ActionListener{
         filesubmenu.add(saveFile);
         filesubmenu.add(savetoPDF);
         filesubmenu.add(saveasRTF);
-        file.add(printFile);
         file.add(filesubmenu);
+        file.add(printFile);
 
         //Edit option
         JMenu edit = new JMenu("Edit");
@@ -98,7 +140,6 @@ public class TextBox extends JFrame implements ActionListener{
         JMenuItem cut = new JMenuItem("Cut");
         JMenuItem paste = new JMenuItem("Paste");
         // submenu to edit
-        edit.addSeparator();
         JMenu submenu = new JMenu("Edit Font");
         JMenuItem normal = new JMenuItem("Normal");
         JMenuItem bold = new JMenuItem("Bold");
