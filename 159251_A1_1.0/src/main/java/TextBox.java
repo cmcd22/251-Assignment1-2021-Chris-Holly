@@ -136,6 +136,7 @@ public class TextBox extends JFrame implements ActionListener{
         JMenu edit = new JMenu("Edit");
 
         //Creating edit menu items
+        JMenuItem select = new JMenuItem("Select All");
         JMenuItem copy = new JMenuItem("Copy");
         JMenuItem cut = new JMenuItem("Cut");
         JMenuItem paste = new JMenuItem("Paste");
@@ -150,6 +151,7 @@ public class TextBox extends JFrame implements ActionListener{
         JMenuItem leftalign = new JMenuItem("Align left");
         JMenuItem rightalign = new JMenuItem("Align right");
         //Adding action listeners
+        select.addActionListener(this);
         copy.addActionListener(this);
         cut.addActionListener(this);
         paste.addActionListener(this);
@@ -163,6 +165,7 @@ public class TextBox extends JFrame implements ActionListener{
         leftalign.addActionListener(this);
         rightalign.addActionListener(this);
         // Add to edit dropdown
+        edit.add(select);
         edit.add(copy);
         edit.add(cut);
         edit.add(paste);
@@ -221,6 +224,10 @@ public class TextBox extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         String event = e.getActionCommand();
+        // Select all text in textArea
+        if (event.equals("Select All")) {
+            textArea.selectAll();
+        }
         // Paste clipboard
         if (event.equals("Paste")) {
             textArea.paste();
