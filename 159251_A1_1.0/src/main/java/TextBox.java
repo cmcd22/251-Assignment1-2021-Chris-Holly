@@ -4,13 +4,14 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.odftoolkit.simple.TextDocument;
+import org.odftoolkit.simple.common.EditableTextExtractor;
 import org.yaml.snakeyaml.Yaml;
-
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Document;
@@ -25,10 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -283,6 +282,22 @@ public class TextBox extends JFrame implements ActionListener{
                         textArea.setText(text);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame, ex.getMessage());
+                    }
+                } if (end.equals("odt")) {
+                    TextDocument textD;
+                    try {
+                        // Extract text content from file
+                        textD = TextDocument.loadDocument(fileName);
+                        EditableTextExtractor ete = EditableTextExtractor.newOdfEditableTextExtractor(textD);
+                        ete.getText();
+                        String output = ete.getText();
+                        // Remove metadata from string output
+                        String cutoff = "MicrosoftOffice";
+                        String finalOutput = output.substring(0,output.indexOf(cutoff));
+                        // Add text to textArea
+                        textArea.setText(finalOutput);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 } else {
                     try {
