@@ -12,10 +12,7 @@ import org.odftoolkit.simple.common.EditableTextExtractor;
 import org.yaml.snakeyaml.Yaml;
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Document;
-import javax.swing.text.Highlighter;
+import javax.swing.text.*;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -135,9 +132,9 @@ public class TextBox extends JFrame implements ActionListener{
         JMenuItem normal = new JMenuItem("Normal");
         JMenuItem bold = new JMenuItem("Bold");
         JMenuItem italic = new JMenuItem("Italic");
-        JMenuItem underline = new JMenuItem("Underline");
-        JMenuItem superscript = new JMenuItem("Superscript");
-        JMenuItem color = new JMenuItem("Color");
+        //JMenuItem underline = new JMenuItem("Underline");
+        //JMenuItem superscript = new JMenuItem("Superscript");
+        //JMenuItem color = new JMenuItem("Color");
         JMenuItem leftalign = new JMenuItem("Align left");
         JMenuItem rightalign = new JMenuItem("Align right");
         //Adding action listeners
@@ -149,9 +146,9 @@ public class TextBox extends JFrame implements ActionListener{
         normal.addActionListener(this);
         bold.addActionListener(this);
         italic.addActionListener(this);
-        underline.addActionListener(this);
-        superscript.addActionListener(this);
-        color.addActionListener(this);
+        //underline.addActionListener(this);
+        //superscript.addActionListener(this);
+        //color.addActionListener(this);
         leftalign.addActionListener(this);
         rightalign.addActionListener(this);
         // Add to edit dropdown
@@ -162,8 +159,8 @@ public class TextBox extends JFrame implements ActionListener{
         submenu.add(normal);
         submenu.add(bold);
         submenu.add(italic);
-        submenu.add(superscript);
-        submenu.add(color);
+        //submenu.add(superscript);
+        //submenu.add(color);
         submenu.add(leftalign);
         submenu.add(rightalign);
         edit.add(submenu);
@@ -228,7 +225,18 @@ public class TextBox extends JFrame implements ActionListener{
         // Cuts text
         else if (event.equals("Cut")) {
             textArea.cut();
-        } else if (event.equals("Open")) {
+        }
+        // Bolds ALL text
+        else if (event.equals("Bold")){
+            textArea.setFont(textArea.getFont().deriveFont(Font.BOLD, textArea.getFont().getSize()));
+        }
+        else if (event.equals("Italic")){
+            textArea.setFont(textArea.getFont().deriveFont(Font.ITALIC, textArea.getFont().getSize()));
+        }
+        else if (event.equals("Normal")){
+            textArea.setFont(textArea.getFont().deriveFont(Font.PLAIN, textArea.getFont().getSize()));
+        }
+        else if (event.equals("Open")) {
 
             JFileChooser j = new JFileChooser("f:");
             // simple OpenDialog function
