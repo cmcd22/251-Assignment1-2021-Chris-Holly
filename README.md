@@ -1,5 +1,5 @@
 # 251-Assignment1-2021-Chris-Holly 
-## **Chris McDonald** (*20009360*), **Holly Ducoing** (**)
+## **Chris McDonald** (*20009360*), **Holly Ducoing** (*20012507*)
 ### **How to run**
 #### All features can be accessed directly from the main window.
 #### The following text file formats can be read and opened by the text editor: *.txt*, *.rtf*, *.odt*
