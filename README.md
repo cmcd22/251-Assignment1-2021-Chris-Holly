@@ -8,10 +8,10 @@
 #### Text in the main window can be saved to either *.txt* or *.pdf* format, depending on which menu button is clicked.
 #### Search allows the user to search for a single word. If found, all instances of the word in the document will be highlighted. If not, a popup window will inform the user that their search was unsuccessful.
 ## Significant commit ID's
-###Chris:
-####72b3770, f94aee8, 5c32db7
-###Holly:
-###******
+### Chris:
+#### 72b3770, f94aee8, 5c32db7
+### Holly:
+### ******
 ## Interesting features:
 #### We elected to give our text editor a colour scheme similar to that of *The Matrix*, to make it more aesthetically pleasing.
 
