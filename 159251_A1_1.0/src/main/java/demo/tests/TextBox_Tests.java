@@ -16,7 +16,7 @@ public class TextBox_Tests{
     //Unit testing class
     @Before
     public void setUp() throws Exception{
-
+        textArea = new TextArea();
     }
     @After
     public void tearDown() throws Exception{
