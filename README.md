@@ -12,7 +12,7 @@
 ### Chris:
 #### 72b3770, f94aee8, e7a09f6
 ### Holly:
-### ******
+### 8e61c59, 6938811, 88bf11f
 ## Interesting features:
 #### We elected to give our text editor a colour scheme similar to that of *The Matrix*, to make it more aesthetically pleasing.
 
