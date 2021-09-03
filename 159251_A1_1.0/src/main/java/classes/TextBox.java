@@ -1,32 +1,18 @@
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
+package classes;
+
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.odftoolkit.simple.TextDocument;
-import org.odftoolkit.simple.common.EditableTextExtractor;
 import org.yaml.snakeyaml.Yaml;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.text.*;
-import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TextBox extends JFrame implements ActionListener{
     JFrame frame;
@@ -215,7 +201,7 @@ public class TextBox extends JFrame implements ActionListener{
             textArea.selectAll();
         }
         // Paste clipboard
-        if (event.equals("Paste")) {
+        else if (event.equals("Paste")) {
             textArea.paste();
         }
         // Copy to clipboard
@@ -241,82 +227,13 @@ public class TextBox extends JFrame implements ActionListener{
             JFileChooser j = new JFileChooser("f:");
             // simple OpenDialog function
             int r = j.showOpenDialog(null);
-            //Reset syntax style to none
-            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
             // If a file is selected
             if (r == JFileChooser.APPROVE_OPTION) {
+                //Reset syntax style to none
+                textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
                 // Set the label to the path of the selected directory
                 File fi = new File(j.getSelectedFile().getAbsolutePath());
-                //Get file type
-                String fileName = fi.toString();
-                int dotIndex = fileName.lastIndexOf('.');
-                String end = (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
-                //Set correct syntax style for type of file
-                if (end.equals("java")) {
-                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-                } else if (end.equals("py")) {
-                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PYTHON);
-                } else if (end.equals("cpp")) {
-                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
-                } else if (end.equals("html")) {
-                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
-                } else if (end.equals("xml")) {
-                    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
-                }
-                if (end.equals("rtf")) {
-                    try {
-                        //Get file path
-                        Path filePath = Paths.get(String.valueOf(fi));
-                        byte[] content = Files.readAllBytes(filePath);
-                        //Set up RTF reader
-                        String rtf = new String(content, StandardCharsets.ISO_8859_1);
-                        StringReader in = new StringReader(rtf);
-                        RTFEditorKit kit = new RTFEditorKit();
-                        Document doc = kit.createDefaultDocument();
-                        //Read RTF file
-                        kit.read(in, doc, 0);
-                        String text = doc.getText(0, doc.getLength());
-                        //Display
-                        textArea.setText(text);
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(frame, ex.getMessage());
-                    }
-                } if (end.equals("odt")) {
-                    TextDocument textD;
-                    try {
-                        // Extract text content from file
-                        textD = TextDocument.loadDocument(fileName);
-                        EditableTextExtractor ete = EditableTextExtractor.newOdfEditableTextExtractor(textD);
-                        ete.getText();
-                        String output = ete.getText();
-                        // Remove metadata from string output
-                        String cutoff = "MicrosoftOffice";
-                        String finalOutput = output.substring(0,output.indexOf(cutoff));
-                        // Add text to textArea
-                        textArea.setText(finalOutput);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    try {
-                        String s1 = "",
-                                sl = "";
-                        // File reader
-                        FileReader fr = new FileReader(fi);
-                        // Buffered reader
-                        BufferedReader br = new BufferedReader(fr);
-                        // Initialize sl
-                        sl = br.readLine();
-                        // Take the input from the file
-                        while ((s1 = br.readLine()) != null) {
-                            sl = sl + "\n" + s1;
-                        }
-                        // Set the text
-                        textArea.setText(sl);
-                    } catch (Exception evt) {
-                        JOptionPane.showMessageDialog(frame, evt.getMessage());
-                    }
-                }
+                Open.openFile(fi, textArea, frame);
             }
             // If open is cancelled
             else
@@ -328,22 +245,8 @@ public class TextBox extends JFrame implements ActionListener{
             int r = j.showSaveDialog(null);
             if (r == JFileChooser.APPROVE_OPTION) {
                 // Set directory
-                File fi = new File(j.getSelectedFile().getAbsolutePath());
-                // Writes the file
-                try {
-                    // Create a file writer
-                    FileWriter wr = new FileWriter(fi, false);
-                    // Create buffered writer
-                    BufferedWriter w = new BufferedWriter(wr);
-                    // Write
-                    w.write(textArea.getText());
-                    w.flush();
-                    w.close();
-                    wr.close();
-                    JOptionPane.showMessageDialog(frame, "Save successful.");
-                } catch (Exception evt) {
-                    JOptionPane.showMessageDialog(frame, evt.getMessage());
-                }
+                File fi = new File(j.getSelectedFile().getAbsolutePath()+".txt");
+                Save.saveFile(fi,textArea,frame);
             }
             // If save is cancelled
             else {
@@ -351,71 +254,7 @@ public class TextBox extends JFrame implements ActionListener{
             }
             // PDFbox save
         } else if (event.equals("Save as PDF")) {
-            PDDocument document = null;
-            try {
-                document = new PDDocument();
-                PDPage page = new PDPage();
-                document.addPage(page);
-                PDPageContentStream contentStream = new PDPageContentStream(document, page);
-
-                PDFont pdfFont = PDType1Font.COURIER;
-                float fontSize = 15;
-                float leading = 1.5f * fontSize;
-
-                PDRectangle mb = page.getMediaBox();
-                float margin = 70;
-                float width = mb.getWidth() - 2 * margin;
-                float x = mb.getLowerLeftX() + margin;
-                float y = mb.getUpperRightY() - margin;
-
-                String textAll = textArea.getText();
-                List<String> lines = new ArrayList<String>();
-                for (String text : textAll.split("\n")) {
-                    int lastSpace = -1;
-                    while (text.length() > 0) {
-                        int spaceIndex = text.indexOf(' ', lastSpace + 1);
-                        if (spaceIndex < 0)
-                            spaceIndex = text.length();
-                        String subString = text.substring(0, spaceIndex);
-                        float size = fontSize * pdfFont.getStringWidth(subString) / 1000;
-                        if (size > width) {
-                            if (lastSpace < 0)
-                                lastSpace = spaceIndex;
-                            subString = text.substring(0, lastSpace);
-                            lines.add(subString);
-                            text = text.substring(lastSpace).trim();
-                            lastSpace = -1;
-                        } else if (spaceIndex == text.length()) {
-                            lines.add(text);
-                            text = "";
-                        } else {
-                            lastSpace = spaceIndex;
-                        }
-                    }
-                }
-                contentStream.beginText();
-                contentStream.setFont(pdfFont, fontSize);
-                contentStream.newLineAtOffset(x, y);
-                for (String line : lines) {
-                    contentStream.showText(line);
-                    contentStream.newLineAtOffset(0, -leading);
-                }
-                contentStream.endText();
-                contentStream.close();
-
-                document.save(new File("My_PDF.pdf"));
-                JOptionPane.showMessageDialog(frame, "Saved.");
-            } catch (IOException evt) {
-                JOptionPane.showMessageDialog(frame, evt.getMessage());
-            } finally {
-                if (document != null) {
-                    try {
-                        document.close();
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(frame, ex.getMessage());
-                    }
-                }
-            }
+            SaveAsPDF.saveToPDF(textArea,frame);
         }
 
         else if (event.equals("Print")) {
@@ -436,44 +275,15 @@ public class TextBox extends JFrame implements ActionListener{
 
         else if (event.equals("Search")) {
 
+//
             //Removes existing highlights
             Highlighter h = textArea.getHighlighter();
             h.removeAllHighlights();
             //Show popup window asking user to input a word
             String word = JOptionPane.showInputDialog("Enter search word: \nSingle word searches only");
-            //If the 'okay' button is selected
-            if (word != null) {
-                //Display message if input left blank
-                if (word.equals("")) {
-                    JOptionPane.showMessageDialog(null, "Please enter a search word");
-                }
-                //Allow only single-word searches
-                else if (word.contains(" ")) {
-                    JOptionPane.showMessageDialog(null, "Single word searches only");
-                } else {
-                    //Create search criteria
-                    Pattern p = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
-                    Matcher m = p.matcher(textArea.getText());
-                    //Tracks the number of times the search term appears
-                    int cycles = 0;
-                    //while there are undiscovered instances of the search word
-                    while (m.find()) {
-                        cycles += 1;
-                        //search terms gets highlighted
-                        try {
-                            h.addHighlight(m.start(), m.end(), DefaultHighlighter.DefaultPainter);
-                        } catch (BadLocationException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    //if no instances of the word are found
-                    if (cycles == 0) {
-                        JOptionPane.showMessageDialog(null, "Search term not found");
-                    }
-                }
-                //If the window is closed or 'cancel' is clicked
-            } else {
-                JOptionPane.showMessageDialog(null, "Search cancelled");
+            int cycles = Search.searchWindow(textArea,word);
+            if (cycles != 0) {
+                JOptionPane.showMessageDialog(null,cycles+" matches found.");
             }
         }
 
