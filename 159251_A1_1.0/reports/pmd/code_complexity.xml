@@ -1,0 +1,25 @@
+<METRICS profile="A1 Code Complexity" timestamp="Mon, 6 Sep 2021 13:35:00 NZST">
+	<METRIC category="Method" name="Cyclomatic complexity" abbreviation="v(G)">
+		<VALUE measured="classes.Open.openFile(File,RSyntaxTextArea,JFrame)" value="13.0"/>
+		<VALUE measured="classes.Save.saveFile(File,RSyntaxTextArea,JFrame)" value="2.0"/>
+		<VALUE measured="classes.SaveAsPDF.saveToPDF(RSyntaxTextArea,JFrame)" value="11.0"/>
+		<VALUE measured="classes.Search.searchWindow(RSyntaxTextArea,String)" value="7.0"/>
+		<VALUE measured="classes.TextBox.actionPerformed(ActionEvent)" value="20.0"/>
+		<VALUE measured="classes.TextBox.main(String[])" value="1.0"/>
+		<VALUE measured="classes.TextBox.newWindow(int,int)" value="4.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests.setUp()" value="1.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests.tearDown()" value="2.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests.testOpen()" value="1.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests.testSave()" value="1.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests.testSearch()" value="1.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests.testTextArea()" value="1.0"/>
+	</METRIC>
+	<METRIC category="Class" name="Coupling between objects" abbreviation="CBO">
+		<VALUE measured="classes.Open" value="2.0"/>
+		<VALUE measured="classes.Save" value="2.0"/>
+		<VALUE measured="classes.SaveAsPDF" value="1.0"/>
+		<VALUE measured="classes.Search" value="2.0"/>
+		<VALUE measured="classes.TextBox" value="4.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests" value="3.0"/>
+	</METRIC>
+</METRICS>

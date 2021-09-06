@@ -8,7 +8,6 @@ import org.odftoolkit.simple.common.EditableTextExtractor;
 import javax.swing.*;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

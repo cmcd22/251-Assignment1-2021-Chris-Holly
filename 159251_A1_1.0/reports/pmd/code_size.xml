@@ -1,0 +1,18 @@
+<METRICS profile="A1 Code Size" timestamp="Mon, 6 Sep 2021 13:36:12 NZST">
+	<METRIC category="Class" name="Class size (operations)" abbreviation="CSO">
+		<VALUE measured="classes.Open" value="13.0"/>
+		<VALUE measured="classes.Save" value="13.0"/>
+		<VALUE measured="classes.SaveAsPDF" value="13.0"/>
+		<VALUE measured="classes.Search" value="13.0"/>
+		<VALUE measured="classes.TextBox" value="721.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests" value="18.0"/>
+	</METRIC>
+	<METRIC category="Class" name="Lines of code" abbreviation="LOC">
+		<VALUE measured="classes.Open" value="75.0"/>
+		<VALUE measured="classes.Save" value="19.0"/>
+		<VALUE measured="classes.SaveAsPDF" value="65.0"/>
+		<VALUE measured="classes.Search" value="42.0"/>
+		<VALUE measured="classes.TextBox" value="260.0"/>
+		<VALUE measured="demo.tests.TextBox_Tests" value="59.0"/>
+	</METRIC>
+</METRICS>
